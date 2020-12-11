@@ -1454,6 +1454,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     }
     $data = $this->prepareInsert($data);
     foreach ($this->matches as $m) {
+      if(!$m->parentNode)
+        continue;
       $ins = $data->cloneNode(TRUE);
       if (isset($m->nextSibling))
         $m->parentNode->insertBefore($ins, $m->nextSibling);
@@ -1886,7 +1888,8 @@ class DOMQuery implements \QueryPath\Query, \IteratorAggregate, \Countable {
     foreach ($matches as $item) {
       // The item returned is (according to docs) different from
       // the one passed in, so we have to re-store it.
-      $found->attach($item->parentNode->removeChild($item));
+      if($item->parentNode)
+        $found->attach($item->parentNode->removeChild($item));
     }
 
     // Return a clone DOMQuery with just the removed items. If
